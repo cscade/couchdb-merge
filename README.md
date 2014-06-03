@@ -23,10 +23,11 @@ Example input file;
 
 ## Options
 
-* `-h --host [localhost]` The couchdb host.
+* `-t --host [localhost]` The couchdb host.
 * `-p --port [5984]` The couchdb port.
 * `-d --database` The target database containing the documents to merge into.
 * `-j --json` Path to the json input file.
+* `-v --verbose` Print actions as they happen.
 
 ## License 
 
