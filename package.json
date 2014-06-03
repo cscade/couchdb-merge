@@ -1,0 +1,15 @@
+{
+  "name": "couchdb-merge",
+  "version": "0.0.0",
+  "description": "Shallow merge JSON documents with CouchDB documents.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "couchdb",
+    "merge"
+  ],
+  "author": "Carson S. Christian <cc@amplego.com>",
+  "license": "MIT"
+}
