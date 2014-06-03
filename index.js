@@ -16,10 +16,14 @@
 var async = require('async');
 var coerce = require('./lib/coerce');
 var colors = require('colors');
+var db;
 var fs = require('fs');
 var nano;
 var path = require('path');
 var script = require('commander');
+var updated = 0;
+var util = require('util');
+var xtend = require('xtend');
 
 // Initialize.
 script
@@ -44,7 +48,7 @@ script.json = path.resolve(script.json);
 if (script.host.slice(0, 4) !== 'http') script.host = 'http://' + script.host;
 nano = require('nano')(script.host + ':' + script.port);
 
-// Set up.
+// Set up, verify.
 async.parallel({
 	json: function(next) {
 		log(2, 'Reading json:'.blue, script.json);
@@ -61,16 +65,29 @@ async.parallel({
 		});
 	},
 	database: function(next) {
-		log(2, 'CouchDB:'.blue, script.host + ':' + script.port);
+		log(2, 'Couchdb:'.blue, script.host + ':' + script.port);
 		nano.db.get(script.database, function(e, body) {
 			if (e && e.code === 'ENOTFOUND') return next(new Error('could not connect to ' + (script.host + ':' + script.port)));
 			if (e && e.status_code === 404) return next(new Error(script.database + ' does not exist'));
 			if (e) return next(e);
-			log(1, 'CouchDB:'.blue, 'database exists, ok.');
+			log(1, 'Couchdb database'.blue, script.database, 'exists, ok.'.blue);
+			db = nano.use(script.database);
 			next();
 		});
 	}
 }, function(e, results) {
 	if (e) return log(0, 'Error:'.red, e.message), process.exit(1);
+	// Perform the merges.
+	async.forEach(results.json, function(obj, next) {
+		if (!obj._id) return log(1, 'Object has no _id, ignoring:'.yellow, util.inspect(obj)), next();
+		db.head(obj._id, function(e, body, headers) {
+			if (e && e.status_code === 404) return log(1, 'Document'.yellow, obj._id, 'does not exist.'.yellow), next();
+			else if (e) return next(e);
+			headers.etag = headers.etag.slice(1, -1); // Strip quotes from etag.
+			log(2, 'Document'.blue, obj._id, 'is at rev'.blue, headers.etag);
+			next();
+		});
+	}, function(e) {
 
+	});
 });
