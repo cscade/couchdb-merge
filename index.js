@@ -14,11 +14,13 @@
 */
 
 var async = require('async');
+var badId = 0;
 var coerce = require('./lib/coerce');
 var colors = require('colors');
 var db;
 var fs = require('fs');
 var nano;
+var notFound = 0;
 var path = require('path');
 var script = require('commander');
 var updated = 0;
@@ -37,7 +39,7 @@ script
 
 // Logging.
 var log = require('./lib/output')(script);
-log(0, 'Starting up.'.green);
+log(1, 'Starting up.'.green);
 
 // Required options.
 if (!script.database) return log(0, 'No target database specified. Use the'.green, '--database', 'option, or try'.green, '--help'), process.exit(1);
@@ -79,15 +81,26 @@ async.parallel({
 	if (e) return log(0, 'Error:'.red, e.message), process.exit(1);
 	// Perform the merges.
 	async.forEach(results.json, function(obj, next) {
-		if (!obj._id) return log(1, 'Object has no _id, ignoring:'.yellow, util.inspect(obj)), next();
-		db.head(obj._id, function(e, body, headers) {
-			if (e && e.status_code === 404) return log(1, 'Document'.yellow, obj._id, 'does not exist.'.yellow), next();
+		if (!obj._id) return log(1, 'Object has no _id, ignoring:'.yellow, util.inspect(obj)), badId++, next();
+		db.get(obj._id, function(e, body) {
+			var result;
+
+			if (e && e.status_code === 404) return log(1, 'Document'.yellow, obj._id, 'does not exist, skipping.'.yellow), notFound++, next();
 			else if (e) return next(e);
-			headers.etag = headers.etag.slice(1, -1); // Strip quotes from etag.
-			log(2, 'Document'.blue, obj._id, 'is at rev'.blue, headers.etag);
-			next();
+			log(2, 'Document'.blue, body._id, 'is at rev'.blue, body._rev);
+			result = xtend(body, obj);
+			db.insert(result, function(e, body) {
+				if (e) return next(e);
+				log(3, 'Document'.blue, result._id, 'updated to rev'.blue, body.rev);
+				updated++;
+				next();
+			});
 		});
 	}, function(e) {
-
+		if (e) return log(0, 'Error:'.red, e.message), process.exit(1);
+		log(0, 'All done!'.green, updated, 'documents were updated.'.green);
+		if (notFound) log(0, 'Missing documents:'.yellow, notFound, 'document could not be found in couchdb.'.yellow);
+		if (badId) log(0, 'Bad inputs:'.yellow, badId, 'input objects had bad or missing _id properties.'.yellow);
+		process.exit(0);
 	});
 });
