@@ -11,5 +11,15 @@
     "merge"
   ],
   "author": "Carson S. Christian <cc@amplego.com>",
-  "license": "MIT"
+  "bin": {
+    "couchdb-merge": "./index.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "xtend": "^3.0.0",
+    "nano": "^5.9.1",
+    "async": "^0.9.0",
+    "commander": "^2.2.0",
+    "colors": "^0.6.2"
+  }
 }
