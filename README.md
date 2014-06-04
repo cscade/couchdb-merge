@@ -33,6 +33,16 @@ Properties can be arbitrarily complex and nested, the merge is performed with bo
 * `-j --json` Path to the json input file.
 * `-v` Print actions as they happen. Stack for greater verbosity.
 
+## Tests
+
+Test coverage is provided.
+
+	$ npm test
+
+	․․․․․․․․․․․․․
+
+	13 passing (3s)
+
 ## License 
 
 (The MIT License)

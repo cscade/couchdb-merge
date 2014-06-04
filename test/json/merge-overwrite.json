@@ -1,0 +1,9 @@
+[
+	{
+		"_id": "test_document",
+		"simple": "bar",
+		"complex": {
+			"foo": "bar"
+		}
+	}
+]
