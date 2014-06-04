@@ -146,5 +146,15 @@ describe('couchdb-merge', function() {
 				});
 			});
 		});
+		it('should delete properties passed in as null', function(done) {
+			exec('couchdb-merge -d couchdb-merge-test -j test/json/merge-delete-null.json', function(e) {
+				should.not.exist(e);
+				nano.use('couchdb-merge-test').get('test_document', function(e, doc) {
+					should.not.exist(e);
+					doc.should.not.have.property('complex');
+					done();
+				});
+			});
+		});
 	});
 });
