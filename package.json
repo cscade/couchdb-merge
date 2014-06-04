@@ -1,6 +1,6 @@
 {
     "name": "couchdb-merge",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Shallow merge JSON documents with CouchDB documents.",
     "main": "index.js",
     "repository": {
