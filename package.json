@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": "https://github.com/cscade/couchdb-merge",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha --reporter spec --slow 500"
+    "test": "./node_modules/mocha/bin/mocha --slow 1000"
   },
   "keywords": [
     "couchdb",
