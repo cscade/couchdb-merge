@@ -29,7 +29,7 @@ var xtend = require('xtend');
 
 // Initialize.
 script
-	.version('0.0.0')
+	.version('0.1.0')
 	.option('-t, --host [host]', 'Connect to the specified host. [http://localhost]', 'http://localhost')
 	.option('-p, --port [port]', 'Connect to the specified port. [5984]', parseInt, 5984)
 	.option('-d, --database [database]', 'Update documents within the specified database.')
