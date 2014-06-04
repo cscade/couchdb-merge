@@ -8,9 +8,17 @@ var should = require('should');
 
 // Set up.
 before(function(done) {
-	nano.db.create('couchdb-merge-test', function(e) {
-		if (e) return done(e);
-		nano.use('couchdb-merge-test').insert(require(__dirname + '/couchdb/testDocument.json'), done);
+	nano.db.create('couchdb-merge-test', done);
+});
+
+// Test document state.
+beforeEach(function(done) {
+	nano.use('couchdb-merge-test').insert(require(__dirname + '/couchdb/testDocument.json'), done);
+});
+afterEach(function(done) {
+	nano.use('couchdb-merge-test').get('test_document', function(e, doc) {
+		if (e) return done();
+		nano.use('couchdb-merge-test').destroy(doc._id, doc._rev, done);
 	});
 });
 
@@ -98,6 +106,44 @@ describe('couchdb-merge', function() {
 			exec('couchdb-merge -d couchdb-merge-test -j test/json/no-matching.json', function(e) {
 				should.not.exist(e);
 				done();
+			});
+		});
+	});
+
+	// Merging.
+	describe('merging', function() {
+		it('should add new properties', function(done) {
+			exec('couchdb-merge -d couchdb-merge-test -j test/json/merge-add-new.json', function(e) {
+				should.not.exist(e);
+				nano.use('couchdb-merge-test').get('test_document', function(e, doc) {
+					should.not.exist(e);
+					doc.should.have.property('test', 'Yay!');
+					done();
+				});
+			});
+		});
+		it('should overwrite existing properties', function(done) {
+			exec('couchdb-merge -d couchdb-merge-test -j test/json/merge-overwrite.json', function(e) {
+				should.not.exist(e);
+				nano.use('couchdb-merge-test').get('test_document', function(e, doc) {
+					should.not.exist(e);
+					doc.should.have.property('simple', 'bar');
+					doc.should.have.property('complex');
+					doc.complex.should.eql({
+						"foo": "bar"
+					});
+					done();
+				});
+			});
+		});
+		it('should leave unmentioned properties alone', function(done) {
+			exec('couchdb-merge -d couchdb-merge-test -j test/json/merge-add-new.json', function(e) {
+				should.not.exist(e);
+				nano.use('couchdb-merge-test').get('test_document', function(e, doc) {
+					should.not.exist(e);
+					doc.should.have.property('simple', 'foo');
+					done();
+				});
 			});
 		});
 	});
