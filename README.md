@@ -2,11 +2,11 @@
 
 [![Build Status](https://travis-ci.org/cscade/couchdb-merge.svg)](https://travis-ci.org/cscade/couchdb-merge)
 
-Shallow merge JSON objects into CouchDB documents. Input object properties will overwrite destination document properties, regardless of existence or type.
+Shallow merge JSON documents with CouchDB documents from the command line.
 
 ## Basic Usage
 
-	couchdb-merge --database db_name --json source.json
+	$ couchdb-merge --database db_name --json source.json
 
 For each object in the input JSON file, the appropriate couchdb document will be updated. The latest document _rev is automatically retrieved before the merge is performed, therefore this is a "blind merge" - the input properties will always take precedence over the existing document properties at execution time.
 
