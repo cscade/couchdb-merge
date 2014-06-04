@@ -1,5 +1,7 @@
 # couchdb-merge
 
+[![Build Status](https://travis-ci.org/cscade/couchdb-merge.svg)](https://travis-ci.org/cscade/couchdb-merge)
+
 Shallow merge JSON objects into CouchDB documents. Input object properties will overwrite destination document properties, regardless of existence or type.
 
 ## Basic Usage

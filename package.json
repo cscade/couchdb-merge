@@ -3,7 +3,10 @@
   "version": "0.1.2",
   "description": "Shallow merge JSON documents with CouchDB documents.",
   "main": "index.js",
-  "repository": "https://github.com/cscade/couchdb-merge",
+  "repository": {
+      "type": "git",
+      "url": "git@github.com:cscade/couchdb-merge.git"
+  },
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha --slow 1000"
   },
