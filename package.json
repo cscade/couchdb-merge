@@ -1,11 +1,14 @@
 {
     "name": "couchdb-merge",
-    "version": "0.1.2",
+    "version": "1.0.0",
     "description": "Shallow merge JSON documents with CouchDB documents.",
     "main": "index.js",
-    "repository": "https://github.com/cscade/couchdb-merge",
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:cscade/couchdb-merge.git"
+    },
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "./node_modules/mocha/bin/mocha --slow 1000"
     },
     "keywords": [
         "couchdb",
@@ -24,5 +27,9 @@
         "async": "^0.9.0",
         "commander": "^2.2.0",
         "colors": "^0.6.2"
+    },
+    "devDependencies": {
+        "should": "^4.0.0",
+        "mocha": "^1.20.1"
     }
 }

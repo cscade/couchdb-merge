@@ -1,0 +1,13 @@
+{
+	"_id": "test_document",
+	"simple": "foo",
+	"complex": {
+		"array": [
+			"foo"
+		],
+		"number": 1,
+		"object": {
+			"foo": "bar"
+		}
+	}
+}

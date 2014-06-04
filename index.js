@@ -10,6 +10,7 @@
 	-p, --port [5984]		The couchdb port.
 	-d, --database			The target database containing the documents to merge into.
 	-j, --json				Path to the json input file.
+	-x, --prune				Delete document properties when object values === null.
 	-v						Print actions as they happen. Stack for greater verbosity.
 */
 
@@ -29,11 +30,11 @@ var xtend = require('xtend');
 
 // Initialize.
 script
-	.version('0.1.0')
 	.option('-t, --host [host]', 'Connect to the specified host. [http://localhost]', 'http://localhost')
 	.option('-p, --port [port]', 'Connect to the specified port. [5984]', parseInt, 5984)
 	.option('-d, --database [database]', 'Update documents within the specified database.')
 	.option('-j, --json [file]', 'Update documents with the specified JSON.')
+	.option('-x, --prune', 'Delete document properties when object values === null.')
 	.option('-v', 'Print actions as they happen. Stack for greater verbosity.', coerce.verbosity, 0)
 	.parse(process.argv);
 
@@ -80,15 +81,22 @@ async.parallel({
 }, function(e, results) {
 	if (e) return log(0, 'Error:'.red, e.message), process.exit(1);
 	// Perform the merges.
-	async.forEach(results.json, function(obj, next) {
-		if (!obj._id) return log(1, 'Object has no _id, ignoring:'.yellow, util.inspect(obj)), badId++, next();
-		db.get(obj._id, function(e, body) {
+	async.forEach(results.json, function(input, next) {
+		if (!input._id) return log(1, 'Object has no _id, ignoring:'.yellow, util.inspect(input)), badId++, next();
+		db.get(input._id, function(e, doc) {
 			var result;
 
-			if (e && e.status_code === 404) return log(1, 'Document'.yellow, obj._id, 'does not exist, skipping.'.yellow), notFound++, next();
+			if (e && e.status_code === 404) return log(1, 'Document'.yellow, input._id, 'does not exist, skipping.'.yellow), notFound++, next();
 			else if (e) return next(e);
-			log(2, 'Document'.blue, body._id, 'is at rev'.blue, body._rev);
-			result = xtend(body, obj);
+			log(2, 'Document'.blue, doc._id, 'is at rev'.blue, doc._rev);
+			// Initial merge.
+			result = xtend(doc, input);
+			if (script.prune) {
+				// Prune the document of any properies where object value === null.
+				Object.keys(input).forEach(function(key) {
+					if (input.hasOwnProperty(key) && input[key] === null) delete result[key];
+				});
+			}
 			db.insert(result, function(e, body) {
 				if (e) return next(e);
 				log(3, 'Document'.blue, result._id, 'updated to rev'.blue, body.rev);
