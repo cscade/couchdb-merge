@@ -27,7 +27,7 @@ Example input file;
 * `-p --port [5984]` The couchdb port.
 * `-d --database` The target database containing the documents to merge into.
 * `-j --json` Path to the json input file.
-* `-v --verbose` Print actions as they happen.
+* `-v` Print actions as they happen. Stack for greater verbosity.
 
 ## License 
 

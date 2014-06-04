@@ -10,7 +10,7 @@
 	-p, --port [5984]		The couchdb port.
 	-d, --database			The target database containing the documents to merge into.
 	-j, --json				Path to the json input file.
-	-v, --verbose			Print actions as they happen.
+	-v						Print actions as they happen. Stack for greater verbosity.
 */
 
 var async = require('async');
@@ -34,7 +34,7 @@ script
 	.option('-p, --port [port]', 'Connect to the specified port. [5984]', parseInt, 5984)
 	.option('-d, --database [database]', 'Update documents within the specified database.')
 	.option('-j, --json [file]', 'Update documents with the specified JSON.')
-	.option('-v, --verbose', 'Print actions as they happen. Stack for greater verbosity.', coerce.verbosity, 0)
+	.option('-v', 'Print actions as they happen. Stack for greater verbosity.', coerce.verbosity, 0)
 	.parse(process.argv);
 
 // Logging.
