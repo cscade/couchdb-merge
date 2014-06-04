@@ -80,15 +80,15 @@ async.parallel({
 }, function(e, results) {
 	if (e) return log(0, 'Error:'.red, e.message), process.exit(1);
 	// Perform the merges.
-	async.forEach(results.json, function(obj, next) {
-		if (!obj._id) return log(1, 'Object has no _id, ignoring:'.yellow, util.inspect(obj)), badId++, next();
-		db.get(obj._id, function(e, body) {
+	async.forEach(results.json, function(input, next) {
+		if (!input._id) return log(1, 'Object has no _id, ignoring:'.yellow, util.inspect(input)), badId++, next();
+		db.get(input._id, function(e, doc) {
 			var result;
 
-			if (e && e.status_code === 404) return log(1, 'Document'.yellow, obj._id, 'does not exist, skipping.'.yellow), notFound++, next();
+			if (e && e.status_code === 404) return log(1, 'Document'.yellow, input._id, 'does not exist, skipping.'.yellow), notFound++, next();
 			else if (e) return next(e);
-			log(2, 'Document'.blue, body._id, 'is at rev'.blue, body._rev);
-			result = xtend(body, obj);
+			log(2, 'Document'.blue, doc._id, 'is at rev'.blue, doc._rev);
+			result = xtend(doc, input);
 			db.insert(result, function(e, body) {
 				if (e) return next(e);
 				log(3, 'Document'.blue, result._id, 'updated to rev'.blue, body.rev);
