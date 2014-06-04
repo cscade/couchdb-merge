@@ -1,26 +1,26 @@
 {
-  "name": "couchdb-merge",
-  "version": "0.1.0",
-  "description": "Shallow merge JSON documents with CouchDB documents.",
-  "main": "index.js",
-  "repository": "https://github.com/cscade/couchdb-merge",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [
-    "couchdb",
-    "merge"
-  ],
-  "author": "Carson S. Christian <cc@amplego.com>",
-  "bin": {
-    "couchdb-merge": "./index.js"
-  },
-  "license": "MIT",
-  "dependencies": {
-    "xtend": "^3.0.0",
-    "nano": "^5.9.1",
-    "async": "^0.9.0",
-    "commander": "^2.2.0",
-    "colors": "^0.6.2"
-  }
+    "name": "couchdb-merge",
+    "version": "0.1.1",
+    "description": "Shallow merge JSON documents with CouchDB documents.",
+    "main": "index.js",
+    "repository": "https://github.com/cscade/couchdb-merge",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "couchdb",
+        "merge"
+    ],
+    "author": "Carson S. Christian <cc@amplego.com>",
+    "bin": {
+        "couchdb-merge": "./index.js"
+    },
+    "license": "MIT",
+    "dependencies": {
+        "xtend": "^3.0.0",
+        "nano": "^5.9.1",
+        "async": "^0.9.0",
+        "commander": "^2.2.0",
+        "colors": "^0.6.2"
+    }
 }
