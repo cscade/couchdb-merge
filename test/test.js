@@ -146,8 +146,19 @@ describe('couchdb-merge', function() {
 				});
 			});
 		});
-		it('should delete properties passed in as null', function(done) {
-			exec('couchdb-merge -d couchdb-merge-test -j test/json/merge-delete-null.json', function(e) {
+		it('should set properties passed in as null literally', function(done) {
+			exec('./index.js -d couchdb-merge-test -j test/json/merge-delete-null.json', function(e) {
+				should.not.exist(e);
+				nano.use('couchdb-merge-test').get('test_document', function(e, doc) {
+					should.not.exist(e);
+					doc.should.have.property('complex');
+					(doc.complex === null).should.be.true;
+					done();
+				});
+			});
+		});
+		it('should delete properties passed in as null when --prune is set', function(done) {
+			exec('./index.js -d couchdb-merge-test -j test/json/merge-delete-null.json --prune', function(e) {
 				should.not.exist(e);
 				nano.use('couchdb-merge-test').get('test_document', function(e, doc) {
 					should.not.exist(e);

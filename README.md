@@ -8,6 +8,15 @@ Shallow merge JSON objects into CouchDB documents. Input object properties will 
 
 For each object in the input JSON file, the appropriate couchdb document will be updated. The latest document _rev is automatically retrieved before the merge is performed, therefore this is a "blind merge" - the input properties will always take precedence over the existing document properties at execution time.
 
+## Options
+
+* `-t, --host [localhost]` The couchdb host.
+* `-p, --port [5984]` The couchdb port.
+* `-d, --database` The target database containing the documents to merge into.
+* `-j, --json` Path to the json input file.
+* `-x, --prune` Delete document properties when object values === null.
+* `-v` Print actions as they happen. Stack for greater verbosity.
+
 ## Input Formatting
 
 The input json document must contain a root-level array of objects. Each object must at minimum contain an `_id` property, referencing the document to merge the remaining properties of the object into.
@@ -25,13 +34,35 @@ Given the input document above, the couchdb document `d50ad02277690ca661ae5cecaf
 
 Properties can be arbitrarily complex and nested, the merge is performed with both the source and destination objects as javascript objects. Just remember this is a shallow merge, so if you need to maintain properties in nested sections of the destination document inside a property you are updating, they must be included in the source json!
 
-## Options
+## Pruning With --prune
 
-* `-t --host [localhost]` The couchdb host.
-* `-p --port [5984]` The couchdb port.
-* `-d --database` The target database containing the documents to merge into.
-* `-j --json` Path to the json input file.
-* `-v` Print actions as they happen. Stack for greater verbosity.
+By default, when an object in the json document has a property with a value of `null`, `null` will be written to the couchdb document literally. By using the `--prune` command line option, you can alter this behavior to "clean up" target documents during the merge. Take the following example;
+
+	# couchdb doc before merge:
+	{
+		"_id": "test_document",
+		"name": "foo",
+		"type": "example"
+	}
+
+	# Input object from your json array:
+	{
+		"_id": "test_document",
+		"type": null
+	}
+
+	# The resulting document in couch:
+	# Without --prune
+	{
+		"_id": "test_document",
+		"name": "foo",
+		"type": null
+	}
+	# With --prune
+	{
+		"_id": "test_document",
+		"name": "foo"
+	}
 
 ## Tests
 
