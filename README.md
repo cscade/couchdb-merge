@@ -2,7 +2,9 @@
 
 [![Build Status](https://travis-ci.org/cscade/couchdb-merge.svg)](https://travis-ci.org/cscade/couchdb-merge)
 
-Shallow merge JSON documents with CouchDB documents from the command line.
+Shallow merge JSON documents into CouchDB documents from the command line.
+
+	npm install -g couchdb-merge
 
 ## Basic Usage
 
@@ -27,60 +29,50 @@ Example input file;
 
 	[
 		{
-			"_id":"d50ad02277690ca661ae5cecaf0db335",
+			"_id":"mydoc",
 			"title":"Elk Grove Village, IL"
 		}
 	]
 
-Given the input document above, the couchdb document `d50ad02277690ca661ae5cecaf0db335` would be updated to include a `title` property of `Elk Grove Village, IL`. The result would be the same regardless of whether the couchdb document contained a title property before the merge. All other properties of the destination document will remain unchanged.
+Given the input document above, the couchdb document `mydoc` would be updated to include a `title` property of `Elk Grove Village, IL`. The result would be the same regardless of whether the couchdb document contained a title property before the merge. All other properties of the destination document will remain unchanged.
 
 Properties can be arbitrarily complex and nested, the merge is performed with both the source and destination objects as javascript objects. Just remember this is a shallow merge, so if you need to maintain properties in nested sections of the destination document inside a property you are updating, they must be included in the source json!
 
-## Pruning With --prune
+## Cleaning Up With --prune
 
 By default, when an object in the json document has a property with a value of `null`, `null` will be written to the couchdb document literally. By using the `--prune` command line option, you can alter this behavior to "clean up" target documents during the merge. Take the following example;
 
 	# couchdb doc before merge:
 	{
-		"_id": "test_document",
+		"_id": "mydoc",
 		"name": "foo",
 		"type": "example"
 	}
 
 	# Input object from your json array:
 	{
-		"_id": "test_document",
+		"_id": "mydoc",
 		"type": null
 	}
 
 	# The resulting document in couch:
-	# Without --prune
+	# Default behavior
 	{
-		"_id": "test_document",
+		"_id": "mydoc",
 		"name": "foo",
 		"type": null
 	}
 	# With --prune
 	{
-		"_id": "test_document",
+		"_id": "mydoc",
 		"name": "foo"
 	}
-
-## Tests
-
-Test coverage is provided.
-
-	$ npm test
-
-	․․․․․․․․․․․․․
-
-	13 passing (3s)
 
 ## License 
 
 (The MIT License)
 
-Copyright (c) 2011 Carson Christian &lt;cc@amplego.com&gt;
+Copyright (c) 2014 Carson Christian &lt;cc@amplego.com&gt;
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
