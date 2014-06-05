@@ -1,7 +1,7 @@
 {
     "name": "couchdb-merge",
     "version": "1.0.3",
-    "description": "Shallow merge JSON documents with CouchDB documents from the command line.",
+    "description": "Shallow merge JSON documents into CouchDB documents from the command line.",
     "main": "index.js",
     "repository": {
         "type": "git",
@@ -17,6 +17,7 @@
         "file"
     ],
     "author": "Carson S. Christian <cc@amplego.com>",
+    "preferGlobal": true,
     "bin": {
         "couchdb-merge": "./index.js"
     },
